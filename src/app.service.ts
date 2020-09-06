@@ -21,4 +21,8 @@ export class AppService {
     );
     console.log({ buckets, objects, uploaded });
   }
+
+  async getPresignedUrl(name: string) {
+    return this.s3Service.getSignedUrl('sandbox-nestjs-s3-storage', name);
+  }
 }

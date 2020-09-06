@@ -4,6 +4,7 @@ import {
   Post,
   UploadedFile,
   UseInterceptors,
+  Param,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AppService } from './app.service';
@@ -37,5 +38,12 @@ export class AppController {
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
     console.log({ file, byteLength: file.buffer.byteLength });
     await this.appService.uploadToS3(file.originalname, file.buffer);
+  }
+
+  @Get('file/:name')
+  async getFileUrl(@Param('name') name: string) {
+    const url = await this.appService.getPresignedUrl(name);
+    console.log({ url });
+    return url;
   }
 }

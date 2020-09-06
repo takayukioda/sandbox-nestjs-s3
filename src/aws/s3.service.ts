@@ -34,4 +34,12 @@ export class S3Service {
       })
       .promise();
   }
+
+  getSignedUrl(bucket: string, filename: string) {
+    assert(filename);
+    return this.instance.getSignedUrl('getObject', {
+      Bucket: bucket,
+      Key: filename,
+    });
+  }
 }
