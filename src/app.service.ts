@@ -11,17 +11,22 @@ export class AppService {
   }
 
   async uploadToS3(name: string, raw: Buffer) {
-    const uploaded = await this.s3Service.pubObject(this.#bucket, name, raw);
-    console.log({ uploaded });
+    const hexName = Buffer.from(name).toString('hex')
+    const uploaded = await this.s3Service.pubObject(this.#bucket, hexName, raw);
+    console.log({ hexName, uploaded });
   }
 
   async getPresignedUrl(name: string) {
-    return this.s3Service.getSignedUrl(this.#bucket, name);
+    const hexName = Buffer.from(name).toString('hex')
+    return this.s3Service.getSignedUrl(this.#bucket, hexName, {
+      filename: name
+    });
   }
 
   async deleteFile(name: string) {
-    console.log({ name });
-    const result = await this.s3Service.deleteObject(this.#bucket, name);
+    const hexName = Buffer.from(name).toString('hex')
+    console.log({ name, hexName });
+    const result = await this.s3Service.deleteObject(this.#bucket, hexName);
     console.log({ result });
     return result;
   }

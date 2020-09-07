@@ -69,11 +69,16 @@ export class S3Service {
       });
   }
 
-  getSignedUrl(bucket: string, key: string) {
+  async getSignedUrl(bucket: string, key: string, options: { filename: string }) {
     assert(key);
+    if (await this.objectNotExists(bucket, key)) {
+      return undefined;
+    }
     return this.instance.getSignedUrl('getObject', {
       Bucket: bucket,
       Key: key,
+      Expires: 300,
+      ResponseContentDisposition: `attachment; filename*=UTF-8''${encodeURIComponent(options.filename)}`,
     });
   }
 }
