@@ -3,26 +3,19 @@ import { S3Service } from './aws/s3.service';
 
 @Injectable()
 export class AppService {
+  #bucket = 'sandbox-nestjs-s3-storage';
+
   constructor(private readonly s3Service: S3Service) {}
   getHello(): string {
     return 'Hello World!';
   }
 
   async uploadToS3(name: string, raw: Buffer) {
-    console.log({ name, raw });
-    const buckets = await this.s3Service.listBuckets();
-    const objects = await this.s3Service.listObjects(
-      'sandbox-nestjs-s3-storage',
-    );
-    const uploaded = await this.s3Service.pubObject(
-      'sandbox-nestjs-s3-storage',
-      name,
-      raw,
-    );
-    console.log({ buckets, objects, uploaded });
+    const uploaded = await this.s3Service.pubObject(this.#bucket, name, raw);
+    console.log({ uploaded });
   }
 
   async getPresignedUrl(name: string) {
-    return this.s3Service.getSignedUrl('sandbox-nestjs-s3-storage', name);
+    return this.s3Service.getSignedUrl(this.#bucket, name);
   }
 }

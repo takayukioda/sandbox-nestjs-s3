@@ -24,22 +24,22 @@ export class S3Service {
     return this.instance.listObjectsV2({ Bucket: bucket }).promise();
   }
 
-  async pubObject(bucket: string, filename: string, data: Buffer) {
-    assert(filename);
+  async pubObject(bucket: string, key: string, data: Buffer) {
+    assert(bucket, key);
     return this.instance
       .putObject({
         Bucket: bucket,
-        Key: filename,
+        Key: key,
         Body: data,
       })
       .promise();
   }
 
-  getSignedUrl(bucket: string, filename: string) {
-    assert(filename);
+  getSignedUrl(bucket: string, key: string) {
+    assert(key);
     return this.instance.getSignedUrl('getObject', {
       Bucket: bucket,
-      Key: filename,
+      Key: key,
     });
   }
 }
