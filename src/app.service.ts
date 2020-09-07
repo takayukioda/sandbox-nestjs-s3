@@ -18,4 +18,11 @@ export class AppService {
   async getPresignedUrl(name: string) {
     return this.s3Service.getSignedUrl(this.#bucket, name);
   }
+
+  async deleteFile(name: string) {
+    console.log({ name });
+    const result = await this.s3Service.deleteObject(this.#bucket, name);
+    console.log({ result });
+    return result;
+  }
 }

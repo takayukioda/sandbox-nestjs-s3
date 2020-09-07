@@ -1,5 +1,6 @@
 import {
   Controller,
+  Delete,
   Get,
   Post,
   UploadedFile,
@@ -45,5 +46,11 @@ export class AppController {
     const url = await this.appService.getPresignedUrl(name);
     console.log({ url });
     return url;
+  }
+
+  @Delete('file/:name')
+  async deleteFile(@Param('name') name: string) {
+    await this.appService.deleteFile(name);
+    return;
   }
 }

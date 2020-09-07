@@ -24,6 +24,22 @@ export class S3Service {
     return this.instance.listObjectsV2({ Bucket: bucket }).promise();
   }
 
+  async objectExists(bucket: string, key: string): Promise<boolean> {
+    assert(bucket, key);
+    const params = {
+      Bucket: bucket,
+      Key: key,
+    };
+    return this.instance
+      .headObject(params)
+      .promise()
+      .then(() => true)
+      .catch(() => false);
+  }
+  async objectNotExists(bucket: string, key: string): Promise<boolean> {
+    return this.objectExists(bucket, key).then((b) => !b);
+  }
+
   async pubObject(bucket: string, key: string, data: Buffer) {
     assert(bucket, key);
     return this.instance
@@ -33,6 +49,24 @@ export class S3Service {
         Body: data,
       })
       .promise();
+  }
+
+  async deleteObject(bucket: string, key: string): Promise<boolean> {
+    assert(key);
+    if (await this.objectNotExists(bucket, key)) {
+      return false;
+    }
+    return this.instance
+      .deleteObject({
+        Bucket: bucket,
+        Key: key,
+      })
+      .promise()
+      .then(() => true)
+      .catch((reason) => {
+        console.error(reason);
+        return false;
+      });
   }
 
   getSignedUrl(bucket: string, key: string) {
