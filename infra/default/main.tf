@@ -30,6 +30,14 @@ resource aws_s3_bucket storage {
   bucket = "sandbox-nestjs-s3-storage"
   acl    = "private"
 
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+
   tags = merge(local.tags, {
     Name = "${local.namespace}-s3-${local.env}"
   })
