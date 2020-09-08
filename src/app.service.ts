@@ -10,9 +10,9 @@ export class AppService {
     return 'Hello World!';
   }
 
-  async uploadToS3(name: string, raw: Buffer) {
+  async uploadToS3(name: string, raw: Buffer, contentType?: string) {
     const hexName = Buffer.from(name).toString('hex')
-    const uploaded = await this.s3Service.pubObject(this.#bucket, hexName, raw);
+    const uploaded = await this.s3Service.pubObject(this.#bucket, hexName, raw, { contentType });
     console.log({ hexName, uploaded });
   }
 

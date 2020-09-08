@@ -40,13 +40,15 @@ export class S3Service {
     return this.objectExists(bucket, key).then((b) => !b);
   }
 
-  async pubObject(bucket: string, key: string, data: Buffer) {
+  async pubObject(bucket: string, key: string, data: Buffer, options: { contentType?: string, filename?: string }) {
     assert(bucket, key);
     return this.instance
       .putObject({
         Bucket: bucket,
         Key: key,
         Body: data,
+        ContentType: options.contentType ?? 'application/octet-stream',
+        ServerSideEncryption: 'AES256',
       })
       .promise();
   }
@@ -69,16 +71,16 @@ export class S3Service {
       });
   }
 
-  async getSignedUrl(bucket: string, key: string, options: { filename: string }) {
+  async getSignedUrl(bucket: string, key: string, options: { filename?: string }) {
     assert(key);
     if (await this.objectNotExists(bucket, key)) {
       return undefined;
     }
-    return this.instance.getSignedUrl('getObject', {
+    const params: any = {
       Bucket: bucket,
       Key: key,
       Expires: 300,
-      ResponseContentDisposition: `attachment; filename*=UTF-8''${encodeURIComponent(options.filename)}`,
-    });
+    }
+    return this.instance.getSignedUrl('getObject', params);
   }
 }

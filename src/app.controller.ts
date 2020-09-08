@@ -37,7 +37,7 @@ export class AppController {
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
     console.log({ file, byteLength: file.buffer.byteLength });
-    await this.appService.uploadToS3(file.originalname, file.buffer);
+    await this.appService.uploadToS3(file.originalname, file.buffer, file.mimetype);
   }
 
   @Get('file/:name')
