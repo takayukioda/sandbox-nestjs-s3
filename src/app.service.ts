@@ -18,9 +18,7 @@ export class AppService {
 
   async getPresignedUrl(name: string) {
     const hexName = Buffer.from(name).toString('hex')
-    return this.s3Service.getSignedUrl(this.#bucket, hexName, {
-      filename: name
-    });
+    return this.s3Service.getSignedUrl(this.#bucket, hexName);
   }
 
   async deleteFile(name: string) {

@@ -40,7 +40,12 @@ export class S3Service {
     return this.objectExists(bucket, key).then((b) => !b);
   }
 
-  async pubObject(bucket: string, key: string, data: Buffer, options: { contentType?: string, filename?: string }) {
+  async pubObject(
+    bucket: string,
+    key: string,
+    data: Buffer,
+    options: { contentType?: string; filename?: string },
+  ) {
     assert(bucket, key);
     return this.instance
       .putObject({
@@ -71,7 +76,7 @@ export class S3Service {
       });
   }
 
-  async getSignedUrl(bucket: string, key: string, options: { filename?: string }) {
+  async getSignedUrl(bucket: string, key: string) {
     assert(key);
     if (await this.objectNotExists(bucket, key)) {
       return undefined;
@@ -80,7 +85,7 @@ export class S3Service {
       Bucket: bucket,
       Key: key,
       Expires: 300,
-    }
+    };
     return this.instance.getSignedUrl('getObject', params);
   }
 }
